@@ -26,6 +26,11 @@ alarm1file = ''
 username = 'common.frameworks@gmail.com'#your email
 password = 'qazx0987'#your password
 
+#intern variable
+durationtime = 12 #unit mintue
+durationstart =''
+durationflag = 'False'
+
 def setup(calendar_service):
     #this is more stuff google told me to do, but essentially it handles the login credentials
     calendar_service.email = username
@@ -48,21 +53,40 @@ def PlayFile(file):
     os.system(command)
 
 def RandomPlay(path):
+    print "@@@@@@@@@@@ RandomPlay"
     file = path + '/' + random.choice(os.listdir(path))
     PlayFile(file)
 
+def RandomPlayDuration(path):
+    print "@@@@@@@@@@@ RandomPlayDuration"
+    global durationstart,durationflag
+    durationstart = time.localtime()
+    print "@@@@@@@@@@@ Set True"
+    durationflag = 'True'
+    file = path + '/' + random.choice(os.listdir(path))
+    print "@@@@@@ flag:",durationflag
+    PlayFile(file)
+
+def CheckDuration():
+    print "++++++++++++start check duration", "-----------"
+    global durationtime,durationstart
+    CheckTime(durationstart,time.localtime(),durationtime)
+    print "------------end check duration", "-----------"
 def CheckTime(event_date,local_date,range):
 #    event=time.strptime(event_date,'%d-%m-%Y %H:%M')
 #    local=time.strptime(local_date,'%d-%m-%Y %H:%M')
 #    delta=int(time.mktime(local))-int(time.mktime(event))
     event=time.strftime('%d-%m-%Y %H:%M',event_date)
     local=time.strftime('%d-%m-%Y %H:%M',local_date)
-    print "event:",event,"local:",event
-    delta=int(time.mktime(local_date))-int(time.mktime(event_date))
+    delta=(int(time.mktime(local_date))-int(time.mktime(event_date)))/60
+    print "R:",event,"L:",local,"delta:",delta," range:", range,"(min)"
 #    print "event:",event_date,"local:",event_date
-    print "delta:",delta," range:", range
-    if abs(delta) <= range:
+    if (delta >= 0 and delta <= range):
         RandomPlay(audio_path)
+    else:
+        print "@+@+@+@+ set False"
+        global durationflag
+        durationflag = 'False'
 
 def FullTextQuery(calendar_service, text_query='wake'):
     query = gdata.calendar.service.CalendarEventQuery\
@@ -72,12 +96,21 @@ def FullTextQuery(calendar_service, text_query='wake'):
     feed = calendar_service.CalendarQuery(query)
     for i, an_event in enumerate(feed.entry):
         for a_when in an_event.when:
-#            event_date = time.strftime('%d-%m-%Y %H:%M',\
-#                time.localtime(tf_from_timestamp(a_when.start_time)))
-#            current_date = time.strftime('%d-%m-%Y %H:%M')
-#            CheckTime(event_date,current_date,180)
-            CheckTime(time.localtime(tf_from_timestamp(a_when.start_time)),time.localtime(),180)
+            event_date = time.strftime('%d-%m-%Y %H:%M',\
+                time.localtime(tf_from_timestamp(a_when.start_time)))
+            current_date = time.strftime('%d-%m-%Y %H:%M')
+            if current_date == event_date:
+                RandomPlayDuration(audio_path)
+#            CheckTime(time.localtime(tf_from_timestamp(a_when.start_time)),time.localtime(),180)
+#            else:
+#                print "R:",event_date,"L:",current_date
+def QueryEvent(event):
+    print "++++++++++++start event query,", event, "-----------"
+    FullTextQuery(calendar_service,event)
+    print "------------end event query,",event, "------------"
+
 def LocalAlarmClock():
+    print "++++++++++++start query local alarm-----------"
     current_time= time.strftime('%H:%M')
     if current_time == alarm1time:
         #PlayFile(alarm1file)
@@ -85,20 +118,21 @@ def LocalAlarmClock():
     else:
         print "Comparison:Fail, local alarm:",alarm1time,\
             ", current time:",current_time
+    print "------------end query local alarm------------"
 
-def QueryEvent(event):
-    print "------------start event query,", event, "-----------"
-    FullTextQuery(calendar_service,event)
-    print "-------------end event query,",event, "------------"
+def CalendarAlarms():
+    global durationflag
+    if durationflag == 'True':
+        CheckDuration()
+    else:
+        QueryEvent("wake")
+        QueryEvent("champion")
 
 def callable_func():
-    QueryEvent("wake")
-    QueryEvent("champion")
-    print "------------start query local alarm-----------"
+    CalendarAlarms()
     LocalAlarmClock()
-    print "-------------end query local alarm------------"
 
-print "start ... ... ."
+print "main start ... ... "
 calendar_service = gdata.calendar.service.CalendarService()
 setup(calendar_service)
 login(calendar_service)
