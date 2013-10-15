@@ -49,7 +49,7 @@ def init(query):
 
 def PlayFile(file):
     command = "mpg321" + " " + file + " -g 100"
-    print "---AlarmClock---",command
+    print "+++PlayFile---",command
     os.system(command)
 
 def RandomPlay(path):
@@ -64,7 +64,6 @@ def RandomPlayDuration(path):
     print "@@@@@@@@@@@ Set True"
     durationflag = 'True'
     file = path + '/' + random.choice(os.listdir(path))
-    print "@@@@@@ flag:",durationflag
     PlayFile(file)
 
 def CheckDuration():
@@ -72,15 +71,9 @@ def CheckDuration():
     global durationtime,durationstart
     CheckTime(durationstart,time.localtime(),durationtime)
     print "------------end check duration", "-----------"
+
 def CheckTime(event_date,local_date,range):
-#    event=time.strptime(event_date,'%d-%m-%Y %H:%M')
-#    local=time.strptime(local_date,'%d-%m-%Y %H:%M')
-#    delta=int(time.mktime(local))-int(time.mktime(event))
-    event=time.strftime('%d-%m-%Y %H:%M',event_date)
-    local=time.strftime('%d-%m-%Y %H:%M',local_date)
     delta=(int(time.mktime(local_date))-int(time.mktime(event_date)))/60
-    print "R:",event,"L:",local,"delta:",delta," range:", range,"(min)"
-#    print "event:",event_date,"local:",event_date
     if (delta >= 0 and delta <= range):
         RandomPlay(audio_path)
     else:
@@ -101,9 +94,9 @@ def FullTextQuery(calendar_service, text_query='wake'):
             current_date = time.strftime('%d-%m-%Y %H:%M')
             if current_date == event_date:
                 RandomPlayDuration(audio_path)
-#            CheckTime(time.localtime(tf_from_timestamp(a_when.start_time)),time.localtime(),180)
 #            else:
 #                print "R:",event_date,"L:",current_date
+
 def QueryEvent(event):
     print "++++++++++++start event query,", event, "-----------"
     FullTextQuery(calendar_service,event)
@@ -116,8 +109,7 @@ def LocalAlarmClock():
         #PlayFile(alarm1file)
         RandomPlay(alarm_path1)
     else:
-        print "Comparison:Fail, local alarm:",alarm1time,\
-            ", current time:",current_time
+        print "Local alarm:",alarm1time,", current time:",current_time
     print "------------end query local alarm------------"
 
 def CalendarAlarms():
