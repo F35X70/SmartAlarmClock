@@ -19,6 +19,7 @@ from apscheduler.scheduler import Scheduler #this will let us check the calender
 import os, random #to play the mp3 later
 
 #EDIT THIS PART BY YOURSELF
+ac_log = "/var/log/alarmclock/ac.log"
 audio_path = '/home/pi/musics/chinese'
 alarm1time = '06:30'
 alarm_path1 = '/home/pi/musics/alarms'
@@ -123,6 +124,9 @@ def CalendarAlarms():
 def callable_func():
     CalendarAlarms()
     LocalAlarmClock()
+# redirect output to file
+print ac_log
+sys.stdout = open(ac_log,'w+')
 
 print "main start ... ... "
 calendar_service = gdata.calendar.service.CalendarService()

@@ -22,7 +22,7 @@ start (){
 	if [ -f $ac_err_log  ];then
 		rm $ac_err_log
 	fi
-	  $python $alarmclock 2>&1 >$ac_log &
+	  $python $alarmclock 2>$ac_err_log &
         RETVAL=$?
         return $RETVAL
 }
