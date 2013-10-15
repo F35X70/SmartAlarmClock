@@ -1,17 +1,19 @@
 ### BEGIN INIT INFO
-# Provides:         alarmclock 
+# Provides:         alarmclock
 # Short-Description: Start alarmclock daemon
 # Required-Start:    $all
 # Required-Stop:     $all
-# Should-Start:      
-# Should-Stop:       
+# Should-Start:
+# Should-Stop:
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 ### END INIT INFO
 
         RETVAL=0
 ac_log="/var/log/alarmclock/ac.log"
-ac_err_log="/var/log/alarmclock/ac.err.log"
+ac_err_log="/var/log/alarmclock/err.log"
+alarmclock="/usr/local/sbin/alarmclock.py"
+python="/usr/bin/python"
 start (){
 	echo -n "Starting AlarmClock daemon: "
 	if [ -f $ac_log  ];then
@@ -20,9 +22,8 @@ start (){
 	if [ -f $ac_err_log  ];then
 		rm $ac_err_log
 	fi
-	/usr/local/sbin/alarmclock.py  1>> /var/log/alarmclock/ac.log 2>> /var/log/alarmclock/ac.err.log &
+	  $python $alarmclock 2>&1 >$ac_log &
         RETVAL=$?
-        echo
         return $RETVAL
 }
 
@@ -32,7 +33,6 @@ stop () {
 	if [ ! -z $pid ];then
         	kill -9 $pid
 	fi
-        echo
         RETVAL=$?
         return $RETVAL
 }
@@ -52,11 +52,8 @@ case "$1" in
         restart)
                 restart
                 ;;
-        status)
-                status alarmclock 
-                ;;
         *)
-                echo $"Usage: $0 {start|stop|status|restart}"
+                echo $"Usage: $0 {start|stop|restart}"
                 RETVAL=1
 esac
 
