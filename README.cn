@@ -1,0 +1,11 @@
+1. Modify configuration in alarmclock.py, include
+   修改配置,包含以下字段
+    * audio_path
+    * username
+    * password
+2. How to running
+   如何运行
+    python alarmclock.py
+
+TODO:
+   增加install脚本,以server方式运行alarmclock 
