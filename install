@@ -1,0 +1,4 @@
+
+#Add service
+sudo cp alarmclock /etc/init.d/alarmclock
+chkconfig -add alarmclock
