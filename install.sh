@@ -2,7 +2,7 @@
 
 log="/var/log/alarmclock"
 if [ ! -d $log ];then
-    mkdir -p $log
+    sudo mkdir -p $log
 fi
 #Add service
 sudo cp alarmclock.py /usr/local/sbin/
