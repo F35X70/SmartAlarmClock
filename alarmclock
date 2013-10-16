@@ -22,7 +22,7 @@ start (){
 	if [ -f $ac_err_log  ];then
 		rm $ac_err_log
 	fi
-	PYTHONUNBUFFERED=1 $python $alarmclock 2>$ac_err_log &
+	PYTHONUNBUFFERED=1 $python $alarmclock >$ac_log 2>>$ac_err_log &
         RETVAL=$?
         return $RETVAL
 }

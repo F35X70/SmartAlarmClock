@@ -1,4 +1,4 @@
-#!/usr/bin/python -u
+#!/usr/bin/python
 #-*- coding:utf-8 -*-
 #These are the imports google said to include
 import gdata.calendar.service
@@ -19,7 +19,6 @@ from apscheduler.scheduler import Scheduler #this will let us check the calender
 import os, random #to play the mp3 later
 
 #EDIT THIS PART BY YOURSELF
-ac_log = "/var/log/alarmclock/ac.log"
 audio_path = '/home/pi/musics/chinese'
 alarm1time = '06:30'
 alarm_path1 = '/home/pi/musics/alarms'
@@ -124,18 +123,15 @@ def CalendarAlarms():
 def callable_func():
     CalendarAlarms()
     LocalAlarmClock()
-    sys.stdout.flush()
-# redirect output to file
-sys.stdout = open(ac_log,'w+')
+#set unbufferd output mode
+sys.stdout = os.fdopen(sys.stdout.fileno(),'w',0)
 
 print "main start ... ... "
-sys.stdout.flush()
 calendar_service = gdata.calendar.service.CalendarService()
 setup(calendar_service)
 login(calendar_service)
 scheduler = Scheduler(standalone=True)
 scheduler.add_interval_job(callable_func,seconds=50)
 print "start scheduler."
-sys.stdout.flush()
 scheduler.start() #runs the program indefinatly on an interval of 5 seconds
 
