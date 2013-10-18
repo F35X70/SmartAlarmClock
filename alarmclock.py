@@ -120,6 +120,7 @@ def CalendarAlarms():
         CheckDuration()
     else:
         QueryEvent("wake")
+        QueryEvent("toeic")
         QueryEvent("champion")
 
 def callable_func():
