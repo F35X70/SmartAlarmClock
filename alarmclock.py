@@ -20,11 +20,13 @@ import os, random #to play the mp3 later
 
 #EDIT THIS PART BY YOURSELF
 audio_path = '/home/pi/musics/chinese'
-alarm1time = '06:30'
-alarm_path1 = '/home/pi/musics/alarms'
 alarm1file = ''
 username = 'common.frameworks@gmail.com'#your email
 password = 'qazx0987'#your password
+
+#Local Alarm
+alarm1time = '06:30'
+alarm_path1 = '/home/pi/musics/alarms'
 
 #intern variable
 durationtime = 12 #unit mintue
@@ -122,7 +124,8 @@ def CalendarAlarms():
 
 def callable_func():
     CalendarAlarms()
-    LocalAlarmClock()
+#    LocalAlarmClock()
+
 #set unbufferd output mode
 sys.stdout = os.fdopen(sys.stdout.fileno(),'w',0)
 
