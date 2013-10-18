@@ -27,8 +27,7 @@ username = 'common.frameworks@gmail.com'#your email
 password = 'qazx0987'#your password
 
 #intern variable
-durationtime = 12 #unit mintue
-durationstart =''
+durationendtime=''
 durationflag = 'False'
 
 def setup(calendar_service):
@@ -57,10 +56,10 @@ def RandomPlay(path):
     file = path + '/' + random.choice(os.listdir(path))
     PlayFile(file)
 
-def RandomPlayDuration(path):
-    print "@@@@@@@@@@@ RandomPlayDuration"
-    global durationstart,durationflag
-    durationstart = time.localtime()
+def RandomPlayDuration(path,endtime):
+    print "@@@@@@@@@@@ RandomPlayDuration,End:",endtime
+    global durationendtime,durationflag
+    durationendtime = endtime
     print "@@@@@@@@@@@ Set True"
     durationflag = 'True'
     file = path + '/' + random.choice(os.listdir(path))
@@ -68,16 +67,16 @@ def RandomPlayDuration(path):
 
 def CheckDuration():
     print "++++++++++++start check duration", "-----------"
-    global durationtime,durationstart
-    CheckTime(durationstart,time.localtime(),durationtime)
+    CheckTime(durationendtime,time.localtime())
     print "------------end check duration", "-----------"
 
-def CheckTime(event_date,local_date,range):
-    delta=(int(time.mktime(local_date))-int(time.mktime(event_date)))/60
-    if (delta >= 0 and delta <= range):
+def CheckTime(event_date,local_date):
+    delta=(int(time.mktime(event_date))-int(time.mktime(local_date)))/60
+    if (delta >= 0 ):
+        print "delta:",delta,"continue play, R:",event_date," L:",local_date
         RandomPlay(audio_path)
     else:
-        print "@+@+@+@+ set False"
+        print "@+@+@+@+ delta:",delta," set False"
         global durationflag
         durationflag = 'False'
 
@@ -93,7 +92,7 @@ def FullTextQuery(calendar_service, text_query='wake'):
                 time.localtime(tf_from_timestamp(a_when.start_time)))
             current_date = time.strftime('%d-%m-%Y %H:%M')
             if current_date == event_date:
-                RandomPlayDuration(audio_path)
+                RandomPlayDuration(audio_path,time.localtime(tf_from_timestamp(a_when.end_time)))
 #            else:
 #                print "R:",event_date,"L:",current_date
 
@@ -113,7 +112,6 @@ def LocalAlarmClock():
     print "------------end query local alarm------------"
 
 def CalendarAlarms():
-    global durationflag
     if durationflag == 'True':
         CheckDuration()
     else:
