@@ -19,7 +19,9 @@ from apscheduler.scheduler import Scheduler #this will let us check the calender
 import os, random #to play the mp3 later
 
 #EDIT THIS PART BY YOURSELF
-audio_path = '/home/pi/musics/chinese'
+alarm_path = '/home/pi/musics/smartAlarmClock/alarms'
+toeic_path = '/home/pi/musics/smartAlarmClock/toeic'
+champion_path = '/home/pi/musics/smartAlarmClock/champion'
 alarm1file = ''
 username = 'common.frameworks@gmail.com'#your email
 password = 'qazx0987'#your password
@@ -31,6 +33,7 @@ alarm_path1 = '/home/pi/musics/alarms'
 #intern variable
 durationendtime=''
 durationflag = 'False'
+playtype = ''
 
 def setup(calendar_service):
     #this is more stuff google told me to do, but essentially it handles the login credentials
@@ -54,18 +57,27 @@ def PlayFile(file):
     os.system(command)
 
 def RandomPlay(path):
-    print "@@@@@@@@@@@ RandomPlay"
+    print "@@@@@@@@@@@ RandomPlay, path:",path
     file = path + '/' + random.choice(os.listdir(path))
     PlayFile(file)
 
-def RandomPlayDuration(path,endtime):
+def PlayByType(type):
+    paths_list = {
+            'wake': 'alarm_path',
+            'toeic':'toeic_path',
+            'champion':'champion_path',
+            }
+    path = paths_list[type]
+    RandomPlay(path)
+
+def RandomPlayDuration(event_type,endtime):
     print "@@@@@@@@@@@ RandomPlayDuration,End:",endtime
-    global durationendtime,durationflag
+    global durationendtime,durationflag,playtype
     durationendtime = endtime
-    print "@@@@@@@@@@@ Set True"
+    print "@@@@@@@@@@@ Set True, Type:",event_type
     durationflag = 'True'
-    file = path + '/' + random.choice(os.listdir(path))
-    PlayFile(file)
+    playtype = event_type
+    PlayByType(event_type)
 
 def CheckDuration():
     print "++++++++++++start check duration", "-----------"
@@ -82,7 +94,7 @@ def CheckTime(event_date,local_date):
         global durationflag
         durationflag = 'False'
 
-def FullTextQuery(calendar_service, text_query='wake'):
+def FullTextQuery(calendar_service, text_query):
     query = gdata.calendar.service.CalendarEventQuery\
         ('default', 'private', 'full', text_query)
     init(query)
@@ -94,7 +106,7 @@ def FullTextQuery(calendar_service, text_query='wake'):
                 time.localtime(tf_from_timestamp(a_when.start_time)))
             current_date = time.strftime('%d-%m-%Y %H:%M')
             if current_date == event_date:
-                RandomPlayDuration(audio_path,time.localtime(tf_from_timestamp(a_when.end_time)))
+                RandomPlayDuration(text_query,time.localtime(tf_from_timestamp(a_when.end_time)))
 #            else:
 #                print "R:",event_date,"L:",current_date
 
