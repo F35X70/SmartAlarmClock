@@ -127,6 +127,7 @@ def LocalAlarmClock():
     print "--------------end query local alarm-----------"
 
 def CalendarAlarms():
+    print "========> Current Time:",time.strftime('%d-%m-%Y %H:%M')
     if durationflag == 'True':
         CheckDuration()
     else:
