@@ -63,9 +63,9 @@ def RandomPlay(path):
 
 def PlayByType(type):
     paths_list = {
-            'wake': 'alarm_path',
-            'toeic':'toeic_path',
-            'champion':'champion_path',
+            'wake': alarm_path,
+            'toeic':toeic_path,
+            'champion':champion_path,
             }
     path = paths_list[type]
     print "@@@@@@@@@@@ PlayByType path:",path
