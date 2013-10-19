@@ -19,7 +19,9 @@ from apscheduler.scheduler import Scheduler #this will let us check the calender
 import os, random #to play the mp3 later
 
 #EDIT THIS PART BY YOURSELF
-audio_path = '/home/pi/musics/chinese'
+alarm_path = '/home/pi/musics/smartAlarmClock/alarms'
+toeic_path = '/home/pi/musics/smartAlarmClock/toeic'
+champion_path = '/home/pi/musics/smartAlarmClock/champion'
 alarm1file = ''
 username = 'common.frameworks@gmail.com'#your email
 password = 'qazx0987'#your password
@@ -61,7 +63,7 @@ def RandomPlay(path):
 
 def PlayByType(type):
     paths_list = {
-            'wake': 'audio_path',
+            'wake': 'alarm_path',
             'toeic':'toeic_path',
             'champion':'champion_path',
             }
