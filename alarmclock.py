@@ -70,12 +70,12 @@ def RandomPlayDuration(path,endtime):
 def CheckDuration():
     print "++++++++++++start check duration", "-----------"
     CheckTime(durationendtime,time.localtime())
-    print "------------end check duration", "-----------"
+    print "--------------end check duration", "-----------"
 
 def CheckTime(event_date,local_date):
     delta=(int(time.mktime(event_date))-int(time.mktime(local_date)))/60
     if (delta >= 0 ):
-        print "delta:",delta,"continue play, R:",event_date," L:",local_date
+        print "delta:",delta,"continue play, L:",local_date
         RandomPlay(audio_path)
     else:
         print "@+@+@+@+ delta:",delta," set False"
@@ -99,9 +99,9 @@ def FullTextQuery(calendar_service, text_query='wake'):
 #                print "R:",event_date,"L:",current_date
 
 def QueryEvent(event):
-    print "++++++++++++start event query,", event, "-----------"
+    print "++++++++++++start event query,",event, "-----------"
     FullTextQuery(calendar_service,event)
-    print "------------end event query,",event, "------------"
+    print "--------------end event query,",event, "-----------"
 
 def LocalAlarmClock():
     print "++++++++++++start query local alarm-----------"
@@ -111,7 +111,7 @@ def LocalAlarmClock():
         RandomPlay(alarm_path1)
     else:
         print "Local alarm:",alarm1time,", current time:",current_time
-    print "------------end query local alarm------------"
+    print "--------------end query local alarm-----------"
 
 def CalendarAlarms():
     if durationflag == 'True':
