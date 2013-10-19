@@ -22,12 +22,12 @@ import os, random #to play the mp3 later
 alarm_path = '/home/pi/musics/smartAlarmClock/alarms'
 toeic_path = '/home/pi/musics/smartAlarmClock/toeic'
 champion_path = '/home/pi/musics/smartAlarmClock/champion'
-alarm1file = ''
 username = 'common.frameworks@gmail.com'#your email
 password = 'qazx0987'#your password
 
 #Local Alarm
 alarm1time = '06:30'
+alarm1file = ''
 alarm_path1 = '/home/pi/musics/alarms'
 
 #intern variable
@@ -52,7 +52,7 @@ def init(query):
     query.max_attendees = '7'
 
 def PlayFile(file):
-    command = "mpg321" + " " + file + " -g 100"
+    command = "mplayer" + " " + file + " "
     print "+++PlayFile---",command
     os.system(command)
 
@@ -68,6 +68,7 @@ def PlayByType(type):
             'champion':'champion_path',
             }
     path = paths_list[type]
+    print "@@@@@@@@@@@ PlayByType path:",path
     RandomPlay(path)
 
 def RandomPlayDuration(event_type,endtime):
@@ -88,7 +89,7 @@ def CheckTime(event_date,local_date):
     delta=(int(time.mktime(event_date))-int(time.mktime(local_date)))/60
     if (delta >= 0 ):
         print "delta:",delta,"continue play, L:",local_date
-        RandomPlay(audio_path)
+        PlayByType(playtype)
     else:
         print "@+@+@+@+ delta:",delta," set False"
         global durationflag
