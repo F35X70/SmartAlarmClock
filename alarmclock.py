@@ -17,6 +17,7 @@ from feed.date.rfc3339 import tf_from_timestamp #also for the comparator
 from datetime import datetime #for the time on the rpi end
 from apscheduler.scheduler import Scheduler #this will let us check the calender on a regular interval
 import os, random #to play the mp3 later
+import commands #to check return result from command line.
 
 #EDIT THIS PART BY YOURSELF
 alarm_path = '/home/pi/musics/smartAlarmClock/alarms'
@@ -51,8 +52,38 @@ def init(query):
     query.futureevents = 'true'
     query.max_attendees = '7'
 
+def CheckMocStatus():
+    output = commands.getoutput('mocp -i')
+    if ("STOP" in output):
+        return "stop"
+    elif ("The server is not running!" in output):
+        return "exit"
+    elif ("State: PLAY" in output):
+        return "running"
+    else:
+        print "====MOC==== Abnormal status: ",output
+
+def TryStartMoc():
+    mocstatus = CheckMocStatus()
+    if ("exit" == mocstatus):
+        StartMoc()
+
+def StartMoc():
+    print "====MOC==== Start Moc Service"
+    command = "mocp -S"
+    os.system(command)
+
+def ExitMoc():
+    print "====MOC==== Exit  Moc Service"
+    command = "mocp -x"
+    os.system(command)
+
 def PlayFile(file):
-    command = "mplayer" + " " + file + " "
+    #-c : Clear the playlist and exit.
+    #-a : Append the files/directories/playlists passed in
+    #       the command line to playlist and exit.
+    #-p : Start playing from the first item on the playlist.
+    command = "mocp -c -a -p " + " " + file
     print "+++PlayFile---",command
     os.system(command)
 
@@ -69,7 +100,14 @@ def PlayByType(type):
             }
     path = paths_list[type]
     print "@@@@@@@@@@@ PlayByType path:",path
-    RandomPlay(path)
+    #Check Moc status,make sure the MOC service has been started.
+    TryStartMoc()
+    #Check running status
+    mocstatus = CheckMocStatus()
+    if ("running" == mocstatus):
+        print "====MOC==== Moc is running, skip !!!"
+    elif ("stop" == mocstatus):
+        RandomPlay(path)
 
 def RandomPlayDuration(event_type,endtime):
     print "@@@@@@@@@@@ RandomPlayDuration,End:",endtime
@@ -94,6 +132,7 @@ def CheckTime(event_date,local_date):
         print "@+@+@+@+ delta:",delta," set False"
         global durationflag
         durationflag = 'False'
+        ExitMoc()
 
 def FullTextQuery(calendar_service, text_query):
     query = gdata.calendar.service.CalendarEventQuery\
@@ -107,6 +146,7 @@ def FullTextQuery(calendar_service, text_query):
                 time.localtime(tf_from_timestamp(a_when.start_time)))
             current_date = time.strftime('%d-%m-%Y %H:%M')
             if current_date == event_date:
+                TryStartMoc()
                 RandomPlayDuration(text_query,time.localtime(tf_from_timestamp(a_when.end_time)))
 #            else:
 #                print "R:",event_date,"L:",current_date
