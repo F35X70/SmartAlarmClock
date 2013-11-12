@@ -1,4 +1,6 @@
 #!/bin/bash
+# Install gdata
+sudo apt-get install python-gdata moc
 
 log="/var/log/alarmclock"
 if [ ! -d $log ];then
