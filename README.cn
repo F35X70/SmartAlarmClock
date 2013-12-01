@@ -8,4 +8,4 @@
     python alarmclock.py
 
 TODO:
-   增加install脚本,以server方式运行alarmclock 
+   增加install脚本,以server方式运行alarmclock
